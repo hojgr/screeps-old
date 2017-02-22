@@ -5,7 +5,17 @@ const SKILLS = [WORK, CARRY, MOVE, MOVE];
 const INIT_HASH: BaseCreep.InitHashT = {role: ROLE, status: BaseCreep.STATUS_GOING_TO_HARVEST};
 
 export function run(creep: Creep): boolean {
-    BaseCreep.run(creep, ROLE, function(c: Creep) {
+    return forceRun(creep, false);
+}
+
+export function forceRun(creep: Creep, force: boolean): boolean {
+    let role = ROLE;
+
+    if (force) {
+        role = creep.memory.role; // workaround
+    }
+
+    BaseCreep.run(creep, role, function(c: Creep) {
         let controller = creep.room.controller;
 
         if (controller !== undefined) {

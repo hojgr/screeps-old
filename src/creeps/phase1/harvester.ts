@@ -1,4 +1,5 @@
 import * as BaseCreep from "./base";
+import * as HarvestUpgrader from "./harvest_upgrader";
 
 export const ROLE = "harvester";
 const SKILLS = [WORK, CARRY, MOVE, MOVE];
@@ -15,17 +16,7 @@ export function run(creep: Creep): boolean {
         });
 
         if (storage === null) {
-            let meetingFlag = c.pos.findClosestByRange<Flag>(FIND_FLAGS, {
-                filter: function(f: Flag) {
-                    return f.name.indexOf("Meeting") === 0;
-                },
-            });
-
-            if (meetingFlag) {
-                c.moveTo(meetingFlag);
-            } else {
-                console.log("No meeting flag!!!");
-            }
+            HarvestUpgrader.forceRun(creep, true);
         } else {
             if (c.pos.isNearTo(storage)) {
                 c.transfer(storage, RESOURCE_ENERGY);

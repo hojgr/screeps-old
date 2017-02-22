@@ -6,7 +6,7 @@ export function manageCreeps(): void {
     let creepModules = [
         {max: 5, spawnFn: Harvester.spawn},
         {max: 2, spawnFn: HarvestUpgrader.spawn},
-        {max: 10, spawnFn: HarvestBuilder.spawn},
+        {max: 1, spawnFn: HarvestBuilder.spawn},
     ];
 
     for (let idx in creepModules) {
