@@ -15,19 +15,16 @@ export function forceRun(creep: Creep, force: boolean): boolean {
         role = creep.memory.role; // workaround
     }
 
-    BaseCreep.run(creep, role, function(c: Creep) {
+    return BaseCreep.run(creep, role, function(c: Creep) {
         let controller = creep.room.controller;
 
         if (controller !== undefined) {
-            c.moveTo(controller);
-
-            if (c.pos.isNearTo(controller)) {
-                c.transfer(controller, RESOURCE_ENERGY);
+            if(c.transfer(controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                c.moveTo(controller);
             }
+
         }
     });
-
-    return true;
 }
 
 export function spawn(maxCreeps: number): boolean {

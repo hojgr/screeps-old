@@ -6,7 +6,7 @@ const SPAWN_NAME = "Spawn1";
 const INIT_HASH: BaseCreep.InitHashT = {role: ROLE, status: BaseCreep.STATUS_GOING_TO_HARVEST};
 
 export function run(creep: Creep): boolean {
-    BaseCreep.run(creep, ROLE, function(c: Creep) {
+    return BaseCreep.run(creep, ROLE, function(c: Creep) {
         let constructionSite = c.pos.findClosestByRange<ConstructionSite>(FIND_CONSTRUCTION_SITES);
 
         if (constructionSite !== undefined) {
@@ -15,8 +15,6 @@ export function run(creep: Creep): boolean {
             }
         }
     });
-
-    return true;
 }
 
 export function spawn(maxCreeps: number): boolean {
