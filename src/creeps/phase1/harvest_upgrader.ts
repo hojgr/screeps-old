@@ -19,7 +19,7 @@ export function forceRun(creep: Creep, force: boolean): boolean {
         let controller = creep.room.controller;
 
         if (controller !== undefined) {
-            if(c.transfer(controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if (c.transfer(controller, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 c.moveTo(controller);
             }
 

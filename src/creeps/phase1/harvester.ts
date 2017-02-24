@@ -1,5 +1,5 @@
 import * as BaseCreep from "./base";
-// import * as HarvestUpgrader from "./harvest_upgrader";
+import * as HarvestUpgrader from "./harvest_upgrader";
 
 export const ROLE = "harvester";
 const SKILLS = [WORK, CARRY, MOVE, MOVE];
@@ -16,7 +16,7 @@ export function run(creep: Creep): boolean {
         });
 
         if (storage === null) {
-            //HarvestUpgrader.forceRun(creep, true);
+            HarvestUpgrader.forceRun(creep, true);
         } else {
             if (c.pos.isNearTo(storage)) {
                 c.transfer(storage, RESOURCE_ENERGY);

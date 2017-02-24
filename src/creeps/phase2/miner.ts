@@ -1,7 +1,7 @@
-import * as SpawnUtil from '../../utils/spawn_util';
+import * as SpawnUtil from "../../utils/spawn_util";
 import {isRole} from "../phase1/base";
 
-export const ROLE = 'miner';
+export const ROLE = "miner";
 
 export function run(creep: Creep): boolean {
     if (creep.memory.role !== ROLE) {
@@ -10,10 +10,11 @@ export function run(creep: Creep): boolean {
 
     let source = Game.getObjectById<Source>(creep.memory.source);
 
-    if(!source)
+    if (!source) {
         return true;
+    }
 
-    if(creep.harvest(source) === ERR_NOT_IN_RANGE) {
+    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
         creep.moveTo(source);
     }
 
@@ -23,18 +24,18 @@ export function run(creep: Creep): boolean {
 export function spawn(): boolean {
     let minerCount = getMinerCount();
 
-    if(minerCount >= getSourceCount()) {
+    if (minerCount >= getSourceCount()) {
         return false;
     }
 
     let initHash = {
         role: ROLE,
-        source: ""
+        source: "",
     };
 
     let source = getUnassignedSource();
 
-    if(source) {
+    if (source) {
         initHash.source = source.id;
     }
 
@@ -60,15 +61,15 @@ function getUnassignedSource(): Source | null {
         filter: (s: Source) => {
             let isAvailable = true;
 
-            for(let creepName in Game.creeps) {
+            for (let creepName in Game.creeps) {
                 let creepMemory = Game.creeps[creepName].memory;
 
-                if("source" in creepMemory && creepMemory.source == s.id) {
+                if ("source" in creepMemory && creepMemory.source === s.id) {
                     isAvailable = false;
                 }
             }
 
             return isAvailable;
-        }
+        },
     });
 }
