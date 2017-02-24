@@ -1,5 +1,5 @@
 import * as Miner from "./miner";
-import * as SpawnUtil from "../../utils/spawn_util";
+import { findClosestEnergyStorage } from "../../utils/energy";
 
 export const ROLE = "runner";
 
@@ -43,44 +43,7 @@ export function run(creep: Creep): boolean {
             creep.moveTo(miner);
         }
     } else if (creep.memory.status === STATUS_STORING) {
-        let spawnStorage: StructureSpawn | null = null;
-        let extensionStorage: StructureExtension | null = null;
-        let containerStorage: StructureContainer| null = null;
-        let storageStorage: StructureStorage| null = null;
-
-        creep.pos.findClosestByRange<StructureStorage>(FIND_STRUCTURES, {
-            filter: (s: any) => {
-                if (((s.store ? s.store[RESOURCE_ENERGY] : 0) || s.energy) === (s.energyCapacity || s.storeCapacity)) {
-                    return false;
-                }
-
-                if (s.structureType === STRUCTURE_SPAWN) {
-                    spawnStorage = s;
-                    return true;
-                } else if (!extensionStorage && s.structureType === STRUCTURE_EXTENSION) {
-                    extensionStorage = s;
-                    return false;
-                } else if (!containerStorage && s.structureType === STRUCTURE_CONTAINER) {
-                    containerStorage = s;
-                    return false;
-                } else if (!storageStorage && s.structureType === STRUCTURE_STORAGE) {
-                    storageStorage = s;
-                    return false;
-                }
-            },
-        });
-
-        let storage: StructureStorage | null = null;
-
-        if (spawnStorage) {
-            storage = spawnStorage;
-        } else if (extensionStorage) {
-            storage = extensionStorage;
-        } else if (containerStorage) {
-            storage = containerStorage;
-        } else if (storageStorage) {
-            storage = storageStorage;
-        }
+        let storage = findClosestEnergyStorage(creep);
 
         if (storage && creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(storage);
@@ -91,17 +54,17 @@ export function run(creep: Creep): boolean {
     return true;
 }
 
-export function spawn(): boolean {
+export function spawn(spawn: Spawn): boolean {
     let availableMiner = findMinerWithoutRunner();
 
     if (!availableMiner) {
         return false;
     }
 
-    SpawnUtil.main().createCreep([
+    spawn.createCreep([
         CARRY, CARRY, CARRY, CARRY, CARRY,
         MOVE,  MOVE,  MOVE,  MOVE,  MOVE,
-    ], undefined, {
+    ], "Runner_" + Game.time, {
         belongsTo: availableMiner.name,
         role: ROLE,
         status: STATUS_COLLECTING,

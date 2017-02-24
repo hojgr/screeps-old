@@ -1,7 +1,9 @@
-import * as SpawnUtil from "../../utils/spawn_util";
-import {isRole} from "../phase1/base";
+import { GameState } from "../../creep_manager";
+import { getSourceCount, getUnassignedSource } from "../../utils/energy";
+import { _c } from "../../utils/spawn_util";
 
 export const ROLE = "miner";
+export const MIN_ENERGY = 550;
 
 export function run(creep: Creep): boolean {
     if (creep.memory.role !== ROLE) {
@@ -21,8 +23,12 @@ export function run(creep: Creep): boolean {
     return true;
 }
 
-export function spawn(): boolean {
-    let minerCount = getMinerCount();
+export function spawn(spawn: Spawn, gameState: GameState): boolean {
+    if(gameState.spawnCapacity < MIN_ENERGY) {
+        return false;
+    }
+
+    let minerCount = _c(gameState.memoryRoles, ROLE);
 
     if (minerCount >= getSourceCount()) {
         return false;
@@ -39,37 +45,7 @@ export function spawn(): boolean {
         initHash.source = source.id;
     }
 
-    SpawnUtil.main().createCreep([WORK, WORK, WORK, WORK, WORK, MOVE], undefined, initHash);
+    let name = spawn.createCreep([WORK, WORK, WORK, WORK, WORK, MOVE], "Miner_" + Game.time, initHash);
 
-    return true;
-}
-
-function getMinerCount(): number {
-    return _.filter(Game.creeps, isRole(ROLE)).length;
-}
-
-function getSourceCount() {
-    return getSources().length;
-}
-
-function getSources(): Source[] {
-    return SpawnUtil.main().room.find<Source>(FIND_SOURCES);
-}
-
-function getUnassignedSource(): Source | null {
-    return SpawnUtil.main().pos.findClosestByRange<Source>(FIND_SOURCES, {
-        filter: (s: Source) => {
-            let isAvailable = true;
-
-            for (let creepName in Game.creeps) {
-                let creepMemory = Game.creeps[creepName].memory;
-
-                if ("source" in creepMemory && creepMemory.source === s.id) {
-                    isAvailable = false;
-                }
-            }
-
-            return isAvailable;
-        },
-    });
+    return !(name < 0);
 }

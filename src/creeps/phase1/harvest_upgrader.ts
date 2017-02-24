@@ -1,6 +1,10 @@
 import * as BaseCreep from "./base";
+import { GameState } from "../../creep_manager";
+import { _c } from "../../utils/spawn_util";
+import * as Upgrader from "../phase2/upgrader";
 
 export const ROLE = "harvestUpgrader";
+const MAX_HARVEST_UPGRADERS = 3;
 const SKILLS = [WORK, CARRY, MOVE, MOVE];
 const INIT_HASH: BaseCreep.InitHashT = {role: ROLE, status: BaseCreep.STATUS_GOING_TO_HARVEST};
 
@@ -27,6 +31,15 @@ export function forceRun(creep: Creep, force: boolean): boolean {
     });
 }
 
-export function spawn(maxCreeps: number): boolean {
-    return BaseCreep.spawn(maxCreeps, ROLE, SKILLS, INIT_HASH);
+export function spawn(spawn: Spawn, gameState: GameState) {
+    let upgraders = _c(gameState.memoryRoles, Upgrader.ROLE); // TBA
+    let harvestUpgraders = _c(gameState.memoryRoles, ROLE);
+
+    if(upgraders === 0 && harvestUpgraders < MAX_HARVEST_UPGRADERS) {
+        spawn.createCreep(SKILLS, "HarvestUpgrader_" + Game.time, INIT_HASH);
+
+        return true;
+    }
+
+    return false;
 }

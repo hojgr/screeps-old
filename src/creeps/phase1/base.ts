@@ -1,10 +1,6 @@
-import { cost } from "../../utils/skills";
-
 export const STATUS_GOING_TO_HARVEST = 0;
 export const STATUS_HARVESTING = 1;
 export const STATUS_WORKING = 2;
-
-const SPAWN_NAME = "Spawn1";
 
 export interface InitHashT {
     role: string;
@@ -34,20 +30,6 @@ export function run(creep: Creep, role: string, workingFn: (creep: Creep) => voi
         creep.harvest(source);
     } else if (creep.memory.status === STATUS_WORKING) {
         workingFn(creep);
-    }
-
-    return true;
-}
-
-export function spawn(maxCreeps: number, role: string, skills: string[], initHash: InitHashT): boolean {
-    if (_.filter(Game.creeps, isRole(role)).length >= maxCreeps) {
-        return false;
-    }
-
-    let spawn = Game.spawns[SPAWN_NAME];
-
-    if (spawn.energy >= cost(skills)) {
-        spawn.createCreep(skills, undefined, initHash);
     }
 
     return true;
